@@ -43,6 +43,9 @@ class GUI:
         self.phone_entry = ctk.CTkEntry(self.tab_add_customer, placeholder_text="000-000-0000")
         self.phone_entry.grid(row=4, column=1)
 
+        self.notes_entry = ctk.CTkTextbox(self.tab_add_customer, height=90)
+        self.notes_entry.grid(row=5, column=1)
+
         # Customer Labels
         self.fname_label = ctk.CTkLabel(self.tab_add_customer, text="First Name")
         self.fname_label.grid(row=0, column=0, padx=10, pady=10, sticky='e')
@@ -59,8 +62,11 @@ class GUI:
         self.phone_label = ctk.CTkLabel(self.tab_add_customer, text="Phone")
         self.phone_label.grid(row=4, column=0, padx=10, pady=10, sticky='e')
 
+        self.notes_label = ctk.CTkLabel(self.tab_add_customer, text="Notes")
+        self.notes_label.grid(row=5, column=0, padx=10, pady=10, sticky='ne')
+
         self.submit_customer = ctk.CTkButton(self.tab_add_customer, text="Submit Customer Record", command=self.add_customer)
-        self.submit_customer.grid(row=5, column=0, columnspan=2, padx=10, pady=10, sticky='w')
+        self.submit_customer.grid(row=6, column=0, columnspan=2, padx=10, pady=10, sticky='w')
 
         # Reagent entry boxes
         self.reagent_name_entry = ctk.CTkEntry(self.tab_add_reagent, placeholder_text="Acetonitrile")
