@@ -18,8 +18,8 @@ This project allows a user to interact with a MySQL database using a GUI form ge
 
 <p align="center">
 Customer Data Entry Form <br/>
-<img src="https://imgur.com/lXsbRgf" height="50%" width="50%" alt="Customer Data Entry Form"/>
+<img src="https://imgur.com/lXsbRgf.png" height="50%" width="50%" alt="Customer Data Entry Form"/>
 
 <p align="center">
 Reagent Data Entry Form <br/>
-<img src="https://imgur.com/5nnwRd2" height="50%" width="50%" alt="Reagent Data Entry Form"/>
+<img src="https://imgur.com/5nnwRd2.png" height="50%" width="50%" alt="Reagent Data Entry Form"/>
