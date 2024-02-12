@@ -1,4 +1,5 @@
 import mysql.connector
+import tkinter
 import customtkinter as ctk
 
 
@@ -10,6 +11,48 @@ def db_connect():
       database="testdb"
     )
     return db
+
+
+# Tooltip class and tooltip creation function copied & adapted from:
+# https://stackoverflow.com/questions/20399243/display-message-when-hovering-over-something-with-mouse-cursor-in-python
+class ToolTip(object):
+    def __init__(self, widget):
+        self.widget = widget
+        self.tipwindow = None
+        self.id = None
+        self.x = self.y = 0
+
+    def showtip(self, text):
+        """Display text in tooltip window"""
+        self.text = text
+        if self.tipwindow or not self.text:
+            return
+        x, y, cx, cy = self.widget.bbox("insert")
+        x = x + self.widget.winfo_rootx()
+        y = y + cy + self.widget.winfo_rooty()
+        self.tipwindow = tw = tkinter.Toplevel(self.widget)
+        tw.wm_overrideredirect(1)
+        tw.wm_geometry("+%d+%d" % (x, y))
+        label = tkinter.Label(tw, text=self.text, justify="center", background="#ffffe0", relief="solid", borderwidth=1, font=("calibri", "12", "normal"))
+        label.pack(ipadx=1)
+
+    def hidetip(self):
+        tw = self.tipwindow
+        self.tipwindow = None
+        if tw:
+            tw.destroy()
+
+
+def create_tooltip(widget, text):
+    toolTip = ToolTip(widget)
+    def enter(event):
+        toolTip.showtip(text)
+    def leave(event):
+        toolTip.hidetip()
+    widget.bind('<Enter>', enter)
+    widget.bind('<Leave>', leave)
+# End copied function
+# -----------------------------------------------------------------------------------------------
 
 
 class GUI:
@@ -35,19 +78,19 @@ class GUI:
         """Draws all of the customer data entry labels and fields"""
         cur_row = 1
         # Customer entry boxes
-        self.fname_entry = ctk.CTkEntry(self.tab_add_customer, placeholder_text="First Name", border_color='grey')
+        self.fname_entry = ctk.CTkEntry(self.tab_add_customer, border_color='grey')
         self.fname_entry.grid(row=cur_row, column=1)
         cur_row += 1
 
-        self.lname_entry = ctk.CTkEntry(self.tab_add_customer, placeholder_text="Last Name", border_color='grey')
+        self.lname_entry = ctk.CTkEntry(self.tab_add_customer, border_color='grey')
         self.lname_entry.grid(row=cur_row, column=1)
         cur_row += 1
 
-        self.org_entry = ctk.CTkEntry(self.tab_add_customer, placeholder_text="Organization", border_color='grey')
+        self.org_entry = ctk.CTkEntry(self.tab_add_customer, border_color='grey')
         self.org_entry.grid(row=cur_row, column=1)
         cur_row += 1
 
-        self.email_entry = ctk.CTkEntry(self.tab_add_customer, placeholder_text="Email", border_color='grey')
+        self.email_entry = ctk.CTkEntry(self.tab_add_customer, placeholder_text="JohnDoe@email.com", border_color='grey')
         self.email_entry.grid(row=cur_row, column=1)
         cur_row += 1
 
@@ -55,7 +98,7 @@ class GUI:
         self.phone_entry.grid(row=cur_row, column=1)
         cur_row += 1
 
-        self.notes_entry = ctk.CTkTextbox(self.tab_add_customer, height=90, border_color='grey')
+        self.notes_entry = ctk.CTkTextbox(self.tab_add_customer, height=90, width=150, border_color='grey')
         self.notes_entry.grid(row=cur_row, column=1)
         cur_row += 1
 
@@ -83,6 +126,9 @@ class GUI:
 
         self.phone_label = ctk.CTkLabel(self.tab_add_customer, text="Phone")
         self.phone_label.grid(row=cur_row, column=0, padx=10, pady=10, sticky='e')
+        self.phone_update_label = ctk.CTkLabel(self.tab_add_customer, text="(?)", text_color='yellow')
+        self.phone_update_label.grid(row=cur_row, column=3, pady=10, sticky='w')
+        create_tooltip(self.phone_update_label, "New Feature!\nPhone number is optional, but must be formatted as displayed.")
         cur_row += 1
 
         self.notes_label = ctk.CTkLabel(self.tab_add_customer, text="Notes")
@@ -161,8 +207,11 @@ class GUI:
             self.phone_check_label.grid(row=cur_row, column=0, columnspan=2)
 
         if cust_info is not None:
-            self.added_customer_label = ctk.CTkLabel(self.customer_submit_frame, text=f"The following record was added to the database:\n{cust_info[0]} {cust_info[1]}, {cust_info[2]}, {cust_info[3]}")
-            self.added_customer_label.grid(row=cur_row, column=0, columnspan=2)
+            self.added_customer_label = ctk.CTkLabel(self.customer_submit_frame,
+                                                     text=f"The following record was added to the database:\nName: {cust_info[0]} {cust_info[1]}\n"
+                                                          f"Org: {cust_info[2]}\nEmail: {cust_info[3]}\nPhone: {cust_info[4]}\nNote: {cust_info[5]}",
+                                                     justify='left')
+            self.added_customer_label.grid(row=cur_row, column=0, columnspan=2, sticky='w')
 
     def add_customer(self):
         """Validates the form and attempts database addition"""
@@ -222,6 +271,11 @@ class GUI:
             self.create_customer_submit_frame(None, required_error, email_error, phone_error)
             return
 
+        if phone == '':
+            phone = None
+        if note == '':
+            note = None
+
         # Connect to db
         db = db_connect()
         mycursor = db.cursor()
@@ -241,7 +295,7 @@ class GUI:
         self.create_customer_fields()
 
         # Display added record
-        self.create_customer_submit_frame([fname, lname, org, email])
+        self.create_customer_submit_frame([fname, lname, org, email, phone, note])
 
 
 GUI()
