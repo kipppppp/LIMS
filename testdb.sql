@@ -16,8 +16,8 @@ CREATE TABLE customers (
     fname varchar(125) NOT NULL,
     lname varchar(125) NOT NULL,
     org varchar(125) NOT NULL,
-    email varchar(125),
-    phone varchar(12) NOT NULL,
+    email varchar(125) NOT NULL,
+    phone varchar(12),
     note varchar(255),
     PRIMARY KEY (customer_id)
 );

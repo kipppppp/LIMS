@@ -51,8 +51,7 @@ def create_tooltip(widget, text):
         toolTip.hidetip()
     widget.bind('<Enter>', enter)
     widget.bind('<Leave>', leave)
-# End copied function
-# -----------------------------------------------------------------------------------------------
+# End copied function ----------------------------------------------------------------------------------
 
 
 class GUI:
@@ -77,6 +76,7 @@ class GUI:
     def create_customer_fields(self):
         """Draws all of the customer data entry labels and fields"""
         cur_row = 1
+
         # Customer entry boxes
         self.fname_entry = ctk.CTkEntry(self.tab_add_customer, border_color='grey')
         self.fname_entry.grid(row=cur_row, column=1)
@@ -101,11 +101,12 @@ class GUI:
         self.notes_entry = ctk.CTkTextbox(self.tab_add_customer, height=90, width=150, border_color='grey')
         self.notes_entry.grid(row=cur_row, column=1)
         cur_row += 1
+        # End customer entry boxes -----------------------------------------------------------------------------------
 
-        # Customer Labels
+        # Customer Labels --------------------------------------------------------------------------------------------
         cur_row = 0
         self.required_label = ctk.CTkLabel(self.tab_add_customer, text="* Required fields")
-        self.required_label.grid(row=cur_row, column=0, columnspan=2)
+        self.required_label.grid(row=cur_row, column=0, columnspan=3)
         cur_row += 1
 
         self.fname_label = ctk.CTkLabel(self.tab_add_customer, text="*First Name")
@@ -128,7 +129,7 @@ class GUI:
         self.phone_label.grid(row=cur_row, column=0, padx=10, pady=10, sticky='e')
         self.phone_update_label = ctk.CTkLabel(self.tab_add_customer, text="(?)", text_color='yellow')
         self.phone_update_label.grid(row=cur_row, column=3, pady=10, sticky='w')
-        create_tooltip(self.phone_update_label, "New Feature!\nPhone number is optional, but must be formatted as displayed.")
+        create_tooltip(self.phone_update_label, "New Feature! Connect with customers quickly by phone.\nPhone number is optional, but must be formatted as displayed.")
         cur_row += 1
 
         self.notes_label = ctk.CTkLabel(self.tab_add_customer, text="Notes")
@@ -136,7 +137,8 @@ class GUI:
         cur_row += 1
 
         self.submit_customer_btn = ctk.CTkButton(self.tab_add_customer, text="Submit Customer Record", command=self.add_customer)
-        self.submit_customer_btn.grid(row=cur_row, column=0, columnspan=2, padx=10, pady=10)
+        self.submit_customer_btn.grid(row=cur_row, column=0, columnspan=3, padx=10, pady=10)
+        # End customer labels -----------------------------------------------------------------------------------
 
     def create_reagent_fields(self):
         """Draws all of the reagent data entry labels and fields"""
@@ -196,15 +198,15 @@ class GUI:
         cur_row = 0
         if required_error:
             self.required_check_label = ctk.CTkLabel(self.customer_submit_frame, text="Please complete *required fields", text_color='red')
-            self.required_check_label.grid(row=cur_row, column=0, columnspan=2)
+            self.required_check_label.grid(row=cur_row, column=0, columnspan=3)
             cur_row += 1
         if email_error:
             self.email_check_label = ctk.CTkLabel(self.customer_submit_frame, text="Please enter a valid email", text_color='red')
-            self.email_check_label.grid(row=cur_row, column=0, columnspan=2)
+            self.email_check_label.grid(row=cur_row, column=0, columnspan=3)
             cur_row += 1
         if phone_error:
             self.phone_check_label = ctk.CTkLabel(self.customer_submit_frame, text="Phone format must be: 000-000-0000", text_color='red')
-            self.phone_check_label.grid(row=cur_row, column=0, columnspan=2)
+            self.phone_check_label.grid(row=cur_row, column=0, columnspan=3)
 
         if cust_info is not None:
             self.added_customer_label = ctk.CTkLabel(self.customer_submit_frame,
@@ -257,7 +259,7 @@ class GUI:
             self.email_entry.configure(border_color='grey')
 
         if phone == '':
-            pass
+            self.phone_entry.configure(border_color='grey')
         elif len(phone) != 12 or phone[3] != '-' or phone[7] != '-':
             self.phone_entry.configure(border_color='red')
             validation_fail = True
@@ -280,6 +282,7 @@ class GUI:
         db = db_connect()
         mycursor = db.cursor()
 
+        # SQL insert statement
         add = """INSERT INTO customers(fname, lname, org, email, phone, note) VALUES(%s, %s, %s, %s, %s, %s)"""
         info = (fname, lname, org, email, phone, note)
         mycursor.execute(add, info)
